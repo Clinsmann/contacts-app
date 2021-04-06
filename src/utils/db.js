@@ -1,29 +1,6 @@
-import mongoose from 'mongoose';
-import logger from './logger'
+require('dotenv').config();
+const mongoose = require('mongoose');
 
-mongoose.Promise = global.Promise;
-
-const uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@ds215910.mlab.com:15910/contact`
-const dev = "dev"
-const connection = mongoose.connect(uri);
-
-connection
-	.then(db => {
-		logger.info(
-			`Successfully connected to ${uri} MongoDB cluster in ${
-			env
-			} mode.`,
-		);
-		return db;
-	})
-	.catch(err => {
-		if (err.message.code === 'ETIMEDOUT') {
-			logger.info('Attempting to re-establish database connection.');
-			mongoose.connect(uri);
-		} else {
-			logger.error('Error while attempting to connect to database:');
-			logger.error(err);
-		}
-	});
-
-export default connection;
+mongoose.connect('mongodb://127.0.0.1:27017/contacts_app',
+	{ useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true },
+	() => console.log('application successfully connected to database...'));
