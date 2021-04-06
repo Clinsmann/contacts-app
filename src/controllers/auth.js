@@ -24,15 +24,24 @@ export const login = (req, res) => {
 export const signup = (req, res) => {
 	const { email, password, name, username } = req.body;
 	User.findOne({ email }, (error, user) => {
-		if (error) res.status(500).json({ error });
+		if (error) {
+			logger.error(error);
+			res.status(500).json({ error });
+		}
 		else if (user) res.status(409).json({ error: 'Email already exist' });
 		else {
 			const user = { email, password, name, username };
 			const newUser = new User(user);
 			var { error: validationError } = newUser.joiValidate(user);
-			if (validationError) return res.status(400).json({ error: validationError.details });
+			if (validationError) {
+				logger.error(validationError.details);
+				return res.status(400).json({ error: validationError.details });
+			}
 			newUser.save(createEntityError => {
-				if (createEntityError) res.status(500).json({ error: createEntityError });
+				if (createEntityError) {
+					logger.error(createEntityError);
+					res.status(500).json({ error: createEntityError });
+				}
 				else res.status(200).json(authResponse(newUser));
 			})
 		}
@@ -48,16 +57,15 @@ export const forgotPassword = (req, res) => {
 };
 
 const signToken = user => (JWT.sign(
-	{ iss: process.env.JWT_SECRET, sub: user._id, user },
-	// process.env.JWT_SECRET,
+	{ iss: "CONTACTS APP", sub: user._id, user },
 	JWT_SECRET,
 	{ expiresIn: "30 day" }
 ));
 
-const authResponse = ({ _id, username, name, email }) => ({
-	user: { _id, username, name, email },
-	token: signToken(user),
-});
+const authResponse = ({ _id, username, name, email }) => {
+	const user = { _id, username, name, email };
+	return { user, token: signToken(user) }
+};
 
 export default {
 	login,

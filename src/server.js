@@ -4,29 +4,26 @@ NOTE:
 Don't forget to implement user authentication for the
 contact resource
 */
-require('dotenv').config();
 
-/* import fs from 'fs';
-// import path from 'path'; */
+import dotenv from 'dotenv';
 import express from 'express';
 import expressWinston from 'express-winston';
-// import bodyParser from 'body-parser';
+
 import winston from 'winston';
 import logger from './utils/logger';
-
 import AuthRouter from './resources/auth'
+import ContactRouter from './resources/contact'
+require('./utils/db');
+
+dotenv.config();
 
 const app = express();
-
 const port = 3001
 const env = "dev"
 
-require('./utils/db');
-
-// app.use(bodyParser.urlencoded({ extended: true }));
-
-// app.use(bodyParser.json());
 app.use(express.json());
+app.use('/auth', AuthRouter);
+app.use('/contact', ContactRouter);
 
 app.use(expressWinston.logger({
 	transports: [new winston.transports.Console({ json: true, colorize: true })],
@@ -37,22 +34,11 @@ app.use(expressWinston.logger({
 	ignoreRoute: function (req, res) { return false; } // optional: allows to skip some log messages based on request and/or response
 }));
 
-app.use('/auth', AuthRouter);
-
-
 app.listen(port, err => {
 	if (err) {
 		logger.error(err);
 		process.exit(1);
 	}
-	// require('./utils/db');
-
-	/* fs.readdirSync(path.join(__dirname, 'resources')).map(file => {
-		require('./resources/' + file)(app);
-	}); */
-	// require('./resources/auth')(app);
 
 	logger.info(`app is now running on port ${port} in ${env} mode`);
 });
-
-// module.exports = app;

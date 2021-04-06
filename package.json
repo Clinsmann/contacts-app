@@ -26,6 +26,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-winston": "^2.5.1",
+    "http-status-codes": "^2.1.4",
     "mongoose": "^5.9.16",
     "mongoose-bcrypt": "^1.5.1",
     "mongoose-string-query": "^0.2.5",

@@ -1,62 +1,8 @@
-/* import mongoose, { Schema } from 'mongoose';
-import bcrypt from 'mongoose-bcrypt';
-import timestamps from 'mongoose-timestamp';
-import mongooseStringQuery from 'mongoose-string-query';
-
-export const UserSchema = new Schema(
-	{
-		email: {
-			type: String,
-			lowercase: true,
-			trim: true,
-			index: true,
-			unique: true,
-			required: true
-		},
-		username: {
-			type: String,
-			lowercase: true,
-			trim: true,
-			index: true,
-			unique: true,
-			required: true
-		},
-		password: {
-			type: String,
-			required: true,
-			bcrypt: true
-		},
-		name: {
-			type: String,
-			trim: true,
-			required: true
-		}
-	},
-	{ collection: 'users' }
-)
-
-UserSchema.plugin(bcrypt);
-UserSchema.plugin(timestamps);
-UserSchema.plugin(mongooseStringQuery);
-
-UserSchema.index({ email: 1, username: 1 });
-
-module.exports = exports = mongoose.model('User', UserSchema);
-
-
-
- */
-
-
-
 import mongoose, { Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import Joi from '@hapi/joi';
 
 const UserSchema = new Schema({
-
-	tokens: [{ token: { type: String, required: true } }],
-
 	email: {
 		type: String,
 		lowercase: true,
@@ -116,11 +62,10 @@ UserSchema.methods.comparePassword = function (password, cb) {
 };
 
 UserSchema.methods.JSON = function () {
-	const { timestamps, password, tokens, ...publicProfile } = this.toObject();
-	/* 	delete publicProfile.timestamps;
-		delete publicProfile.password;
-		delete publicProfile.tokens; */
+	const { timestamps, password, ...publicProfile } = this.toObject();
 	return publicProfile;
 };
 
 module.exports = mongoose.model('User', UserSchema);
+// export default mongoose.model('User', UserSchema);
+// 
