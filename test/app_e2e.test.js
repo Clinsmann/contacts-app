@@ -50,6 +50,23 @@ describe('Authentication', () => {
     const res = await agent.post(`/auth/login`).send(loginData);
     console.log({ res: JSON.stringify(res.body) });
     expect(res.status).toBe(200);
+    expect(res.body.user.email).toBe(signupData.email);
+    expect(res.body.user.password).not.toEqual(signupData.email);
+    expect(res.body.user.username).toBe(signupData.username.toLowerCase());
+    expect(res.body).toHaveProperty('accessToken');
+    expect(res.body.accessToken).toBeTruthy();
+    done();
+  });
+
+  test('should responds with 200 when login in with wrong credential', async (done) => {
+    const res = await agent.post(`/auth/login`).send({ ...loginData, password: 'wrongPassword' });
+    console.log({ res: JSON.stringify(res.body) });
+    expect(res.status).toBe(200);
+    expect(res.body.user.email).toBe(signupData.email);
+    expect(res.body.user.password).not.toEqual(signupData.email);
+    expect(res.body.user.username).toBe(signupData.username.toLowerCase());
+    expect(res.body).toHaveProperty('accessToken');
+    expect(res.body.accessToken).toBeTruthy();
     done();
   });
 });
