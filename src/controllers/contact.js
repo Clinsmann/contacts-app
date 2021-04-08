@@ -69,7 +69,7 @@ export const update = async (req, res) => {
 export const remove = async (req, res) => {
   try {
     const contact = await Contact.findOneAndDelete({ _id: req.params.id, createdBy: req.user.id });
-    if (!contact) res.status(StatusCodes.NOT_FOUND).json({ error: 'Contact not found' });
+    if (!contact) return res.status(StatusCodes.NOT_FOUND).json({ error: 'Contact not found' });
 
     res.status(StatusCodes.OK).json({ contact, message: "Contact deleted" });
   } catch (error) {
