@@ -59,7 +59,7 @@ export const update = async (req, res) => {
     const contact = await Contact.findByIdAndUpdate(id, data);
     if (!contact) return res.status(HttpStatus.NOT_FOUND).json({ error: 'Contact not found' });
 
-    res.status(HttpStatus.NO_CONTENT).json({ contact: await Contact.findById(id) });
+    res.status(HttpStatus.NO_CONTENT);
   } catch (error) {
     logger.error(error);
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error });

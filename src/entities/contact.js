@@ -35,4 +35,4 @@ ContactSchema.methods.joiValidate = contact => {
   return joiContactSchema.validate(contact);
 };
 
-export default mongoose.model('Contact', ContactSchema);
+module.exports = mongoose.model('Contact', ContactSchema);
