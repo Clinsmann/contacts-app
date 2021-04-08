@@ -1,7 +1,7 @@
 import JWT from 'jsonwebtoken';
 import User from '../entities/user';
 import logger from '../utils/logger';
-import HttpStatus from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 
 /**
  * Given a json request 
@@ -26,20 +26,20 @@ export const signup = async (req, res) => {
 
   try {
     const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(HttpStatus.CONFLICT).json({ error: 'Email already exist' });
+    if (existingUser) return res.status(StatusCodes.CONFLICT).json({ error: 'Email already exist' });
 
     const data = { email, password, name, username };
     const user = new User(data);
 
     var { error } = user.joiValidate(data);
-    if (error) return res.status(HttpStatus.BAD_REQUEST).json({ error: error.details });
+    if (error) return res.status(StatusCodes.BAD_REQUEST).json({ error: error.details });
 
     await user.save();
-    res.status(HttpStatus.CREATED).json(authResponse(user));
+    res.status(StatusCodes.CREATED).json(authResponse(user));
 
   } catch (error) {
     logger.error(error);
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error });
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error });
   }
 };
 
@@ -47,7 +47,7 @@ export const signup = async (req, res) => {
  * Implement a way to recover user accounts
  */
 export const forgotPassword = (req, res) => {
-  res.status(HttpStatus.NOT_FOUND).json({ err: "not implemented" })
+  res.status(StatusCodes.NOT_FOUND).json({ err: "not implemented" })
 };
 
 /**
