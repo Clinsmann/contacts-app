@@ -151,6 +151,7 @@ describe('User Contacts', () => {
     done();
   });
 
+
   test('Should return error when trying to delete a contact that doesnt exist', async (done) => {
     const { body: { error }, status } = await agent.set(header).delete(`/contact/${wrongContactID}`);
     expect(status).toBe(StatusCodes.NOT_FOUND);
