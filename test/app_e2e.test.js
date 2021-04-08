@@ -1,11 +1,11 @@
-require('./envConfig');
+require('./testEnvConfig');
 require('../dist/utils/db.js');
 require('../dist/utils/passport');
 const request = require('supertest');
 const app = require('../dist/server.js');
 const User = require('../dist/entities/User');
 
-let server, agent;
+let server, agent, header;
 const loginData = { email: "johndoe@gmail.com", password: "Password123" };
 const signupData = { ...loginData, name: "John Doe Ibeanu", username: "JonnyDrill" };
 
@@ -26,7 +26,7 @@ afterAll(async () => {
 });
 
 describe('Authentication', () => {
-  test('should responds with 201 for correct Signup Payload', async (done) => {
+  test('Should signup successfully, status code of 201', async (done) => {
     const res = await agent.post(`/auth/signup`).send(signupData);
     expect(res.status).toBe(201);
     expect(res.body.user.email).toBe(signupData.email);
@@ -37,18 +37,16 @@ describe('Authentication', () => {
     done();
   });
 
-  test('should responds with 409 when signing up with an exisitng detail', async (done) => {
+  test('Should not signup, status code 409', async (done) => {
     const res = await agent.post(`/auth/signup`).send(signupData);
-    console.log({ res: JSON.stringify(res.body) });
     expect(res.status).toBe(409);
     expect(res.body).toHaveProperty('error');
     expect(res.body.error).toBeTruthy();
     done();
   });
 
-  test('should responds with 200 when login in with correct credential', async (done) => {
+  test('Should login successfully, status code 200', async (done) => {
     const res = await agent.post(`/auth/login`).send(loginData);
-    console.log({ res: JSON.stringify(res.body) });
     expect(res.status).toBe(200);
     expect(res.body.user.email).toBe(signupData.email);
     expect(res.body.user.password).not.toEqual(signupData.email);
@@ -58,16 +56,24 @@ describe('Authentication', () => {
     done();
   });
 
-  test('should responds with 200 when login in with wrong credential', async (done) => {
+  test('should not login, status code 401', async (done) => {
     const res = await agent.post(`/auth/login`).send({ ...loginData, password: 'wrongPassword' });
-    console.log({ res: JSON.stringify(res.body) });
-    expect(res.status).toBe(200);
-    expect(res.body.user.email).toBe(signupData.email);
-    expect(res.body.user.password).not.toEqual(signupData.email);
-    expect(res.body.user.username).toBe(signupData.username.toLowerCase());
-    expect(res.body).toHaveProperty('accessToken');
-    expect(res.body.accessToken).toBeTruthy();
+    expect(res.status).toBe(401);
+    expect(res.text).toBe('Unauthorized');
     done();
   });
 });
 
+
+describe('User Contacts', () => {
+  test('Should get all contact for logged in user', async (done) => {
+    const { body } = await agent.post(`/auth/login`).send(loginData);
+    header = { 'Authorization': 'Bearer ' + body.accessToken };
+
+    const res = await agent.set(header).get(`/contact/all`);
+    expect(res.status).toBe(200);
+    expect(res.body.contacts).toBeTruthy();
+    expect(res.body.contacts.length).toBe(1);
+    done();
+  });
+});
