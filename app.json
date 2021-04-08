@@ -3,7 +3,7 @@
     "test": {
       "scripts": {
         "test-setup": "npm install",
-        "test": "jest"
+        "test": "jest --detectOpenHandles --forceExit"
       },
       "env": {
         "MONGO_DATABASE_URL": "mongodb+srv://contacts-app-user:NB0fbL5TlrGTtfqE@cluster0-ts9ao.mongodb.net/contacts_app_test",
