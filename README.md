@@ -42,6 +42,10 @@ The assessment project uses babel to transpile ES6/ES7 to ES5
   - > `npm run watch`
 - To run your app server
   - > `npm run start`
+- To run test
+  - > `npm run test`
+- To run test in watch mode
+  - > `npm run test:watch`
 
 ## Submitting
 
