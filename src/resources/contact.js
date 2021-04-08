@@ -1,4 +1,3 @@
-require('../utils/passport');
 import express from 'express';
 import passport from 'passport';
 import Contact from '../controllers/contact';

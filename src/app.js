@@ -1,11 +1,7 @@
-
-import path from 'path';
-import dotenv from 'dotenv';
 import app from './server.js';
 import logger from './utils/logger';
-
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
-
+import './utils/envConfig';
+import './utils/passport';
 import './utils/db';
 
 app.listen(process.env.PORT, err => {

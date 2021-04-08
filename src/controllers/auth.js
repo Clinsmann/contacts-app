@@ -2,7 +2,6 @@ import JWT from 'jsonwebtoken';
 import User from '../entities/user';
 import logger from '../utils/logger';
 import HttpStatus from 'http-status-codes';
-import variables from '../utils/variables';
 
 /**
  * Given a json request 
@@ -55,9 +54,9 @@ export const forgotPassword = (req, res) => {
  * SIGN JWT accessToken
  */
 const signToken = user => (JWT.sign(
-  { iss: variables.APP_NAME, sub: user._id, user },
-  variables.JWT_SECRET,
-  { expiresIn: variables.EXPIRES_IN }
+  { iss: process.env.APP_NAME, sub: user._id, user },
+  process.env.JWT_SECRET,
+  { expiresIn: process.env.EXPIRES_IN }
 ));
 
 /**
