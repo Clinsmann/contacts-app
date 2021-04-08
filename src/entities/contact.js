@@ -1,5 +1,5 @@
-import mongoose, { Schema } from 'mongoose';
 import Joi from '@hapi/joi';
+import mongoose, { Schema } from 'mongoose';
 
 const ContactSchema = new Schema({
   phone: {
@@ -16,14 +16,19 @@ const ContactSchema = new Schema({
     unique: true,
     required: true
   },
-  address: String
+  address: {
+    type: String,
+    trim: true,
+  },
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true, collection: 'contacts' });
 
 ContactSchema.index({ phone: 1, name: 1 });
 
 ContactSchema.methods.joiValidate = contact => {
   const joiContactSchema = Joi.object({
-    address: Joi.string().max(100),
+    createdBy: Joi.required(),
+    address: Joi.string().max(255),
     name: Joi.string().min(2).max(50).required(),
     phone: Joi.string().min(11).max(14).required(),
   }).options({ abortEarly: false });

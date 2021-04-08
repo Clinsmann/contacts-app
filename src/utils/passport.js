@@ -1,15 +1,14 @@
-const passport = require('passport');
-const User = require('../entities/user');
-const JwtStrategy = require('passport-jwt').Strategy;
-const ExtractJwt = require('passport-jwt').ExtractJwt;
-const LocalStrategy = require('passport-local').Strategy;
-const JWT_SECRET = 'CLINSMANN_AFRICHORAL_WEB_APPLICATION';
+import './envConfig';
+import passport from 'passport';
+import User from '../entities/user';
+import { ExtractJwt } from 'passport-jwt';
+import { Strategy as JwtStrategy } from 'passport-jwt';
+import { Strategy as LocalStrategy } from 'passport-local';
 
 /*for authorization*/
 passport.use(new JwtStrategy({
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  // secretOrKey: process.env.JWT_SECRET
-  secretOrKey: JWT_SECRET
+  secretOrKey: process.env.JWT_SECRET
 }, (payload, done) => {
   User.findById({ _id: payload.sub }, (err, user) => {
     if (err) return done(err, false);

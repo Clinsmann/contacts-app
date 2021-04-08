@@ -1,4 +1,4 @@
-require('../utils/passport');//do not remove passport config
+import '../utils/passport';
 import express from 'express';
 import passport from 'passport';
 import Auth from '../controllers/auth';
