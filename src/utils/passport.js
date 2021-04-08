@@ -1,4 +1,3 @@
-import './envConfig';
 import passport from 'passport';
 import User from '../entities/user';
 import { ExtractJwt } from 'passport-jwt';
