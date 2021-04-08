@@ -1,18 +1,8 @@
+import JWT from 'jsonwebtoken';
 import User from '../entities/user';
 import logger from '../utils/logger';
-
-const JWT = require('jsonwebtoken');
-
-import { errorMessage, successMessage } from '../utils/response';
-
-const JWT_SECRET = 'CLINSMANN_AFRICHORAL_WEB_APPLICATION';
-
-const signToken = user => (JWT.sign(
-	{ iss: process.env.JWT_SECRET, sub: user._id, user },
-	// process.env.JWT_SECRET,
-	JWT_SECRET,
-	{ expiresIn: "30 day" }
-));
+import HttpStatus from 'http-status-codes';
+import variables from '../utils/variables';
 
 /**
  * Given a json request 
@@ -22,16 +12,7 @@ const signToken = user => (JWT.sign(
  * {"user": <{...}>, "token": "<...>""}
  */
 export const login = (req, res) => {
-	if (req.isAuthenticated()) {
-		const user = {
-			_id: req.user._id,
-			name: req.user.name,
-			email: req.user.email,
-			username: req.user.username
-		}
-		const token = signToken(user);
-		res.status(200).json({ user, token });
-	}
+  if (req.isAuthenticated()) res.json(authResponse(req.user));
 };
 
 /**
@@ -41,36 +22,50 @@ export const login = (req, res) => {
  * which can be used to verify protected resources
  * {"user": <{...}>, "token": "<...>""}
  */
-export const signup = (req, res) => {
-	const { email, password, name, username } = req.body;
-	User.findOne({ email }, (err, user) => {
-		if (err) res.status(500).json(errorMessage(err));
-		else if (user) res.status(409).json(errorMessage('Email already exist'));
-		else {
-			const user = { email, password, name, username };
-			const newUser = new User(userData);
-			var { error } = newUser.joiValidate(userData);
-			if (error) return res.status(400).json(errorMessage(error.details));
-			newUser.save(err => {
-				if (err) res.status(500).json(errorMessage(err));
-				else res.status(201).json({
-					user,
-					token: signToken({ ...userData, _id: newUser._id })
-				});
-			})
-		}
-	});
+export const signup = async (req, res) => {
+  const { email, password, name, username } = req.body;
+
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(HttpStatus.CONFLICT).json({ error: 'Email already exist' });
+
+    const data = { email, password, name, username };
+    const user = new User(data);
+
+    var { error } = user.joiValidate(data);
+    if (error) return res.status(HttpStatus.BAD_REQUEST).json({ error: error.details });
+
+    await user.save();
+    res.status(HttpStatus.CREATED).json(authResponse(user));
+
+  } catch (error) {
+    logger.error(error);
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error });
+  }
 };
 
 /**
  * Implement a way to recover user accounts
  */
 export const forgotPassword = (req, res) => {
-	res.status(404).json({ err: "not implemented" })
+  res.status(HttpStatus.NOT_FOUND).json({ err: "not implemented" })
 };
 
-export default {
-	login,
-	signup,
-	forgotPassword
-}
+/**
+ * SIGN JWT accessToken
+ */
+const signToken = user => (JWT.sign(
+  { iss: variables.APP_NAME, sub: user._id, user },
+  variables.JWT_SECRET,
+  { expiresIn: variables.EXPIRES_IN }
+));
+
+/**
+ * auth response
+ */
+const authResponse = ({ _id, username, name, email }) => {
+  const user = { _id, username, name, email };
+  return { user, accessToken: signToken(user) }
+};
+
+export default { login, signup, forgotPassword }
