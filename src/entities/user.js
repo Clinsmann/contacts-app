@@ -39,7 +39,7 @@ UserSchema.methods.joiValidate = user => {
   const joiUserSchema = Joi.object({
     email: Joi.string().email().required(),
     name: Joi.string().min(6).max(30).required(),
-    username: Joi.string().min(6).max(50).required(),
+    username: Joi.string().min(2).max(50).required(),
     password: Joi.string().min(6).max(30).regex(/[a-zA-Z0-9]{3,30}/).required(),
   }).options({ abortEarly: false });
   return joiUserSchema.validate(user);
