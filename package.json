@@ -8,7 +8,7 @@
     "dev": "nodemon app.js",
     "build": "babel src --out-dir dist",
     "watch": "babel -w src --out-dir dist",
-    "test:watch": "jest --watch --forceExit --detectOpenHandles"
+    "test:watch": "jest --watch"
   },
   "license": "MIT",
   "devDependencies": {
@@ -39,10 +39,5 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "winston": "^2.4.2"
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
-    ]
   }
 }
