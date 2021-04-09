@@ -8,8 +8,8 @@
     "dev": "nodemon app.js",
     "build": "babel src --out-dir dist",
     "watch": "babel -w src --out-dir dist",
-    "test:watch": "jest --watch",
-    "test": "jest"
+    "test:watch": "jest --watch --detectOpenHandles",
+    "test": "jest --detectOpenHandles --forceExit"
   },
   "license": "MIT",
   "devDependencies": {

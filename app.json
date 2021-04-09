@@ -1,0 +1,18 @@
+{
+  "environments": {
+    "test": {
+      "scripts": {
+        "test-setup": "npm install",
+        "test": "jest --detectOpenHandles --forceExit"
+      },
+      "env": {
+        "MONGO_DATABASE_URL": "mongodb+srv://contacts-app-user:NB0fbL5TlrGTtfqE@cluster0-ts9ao.mongodb.net/contacts_app_test",
+        "JWT_SECRET": "CLINSMANN_CONTACT_APP_WEB_APPLICATION",
+        "PORT": "3001",
+        "NODE_ENV": "test",
+        "APP_NAME": "CONTACTSAPP",
+        "EXPIRES_IN": "30 days"
+      }
+    }
+  }
+}
